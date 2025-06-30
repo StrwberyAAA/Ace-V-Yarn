@@ -56,7 +56,6 @@ move_R_logic:
     sw $s0, CAT_X_POS
     
 render_and_delay:
-
    # This renders the cat's new pos
     lw $a0, CAT_X_POS
     li $a1, CAT_Y_POS
