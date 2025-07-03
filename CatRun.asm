@@ -5,8 +5,9 @@ YARN_X_POS:     .word 10
 YARN_Y_POS:     .word 0
 YARN_DIR_X:     .word 1
 YARN_DIR_Y:     .word 1
-TIME_LEFT:      .word 300 # Around 10 seconds countdown
+TIME_LEFT:      .word 600 # Around 10 seconds countdown
 RAND_SEED:      .word 12345
+YARN_MOVE_COUNTER: .word 0
 
 # --- My strings used ---
 STR_INFO:       .asciiz "Ace, catch the yarn ball before your owner gets home!\n"
@@ -19,7 +20,7 @@ STR_LOSE:       .asciiz "Owner came home! Ace loses!\n"
 .eqv PIXEL_SIZE_BYTES 4
 .eqv DISPLAY_WIDTH 32
 .eqv COLOR_CAT_PIXEL 0xFFFFa500  # orange cat
-.eqv COLOR_YARN_PIXEL 0xFF00FF00 # green yarn
+.eqv COLOR_YARN_PIXEL 0xFF0000 # green yarn
 .eqv COLOR_BACKGROUND 0xFF000000
 .eqv DISPLAY_MAX_X 31
 .eqv DISPLAY_MAX_Y 31
@@ -39,7 +40,7 @@ main:
     li $t4, 1
     sw $t4, YARN_DIR_X
     sw $t4, YARN_DIR_Y
-    li $t5, 300         
+    li $t5, 600 #time         
     sw $t5, TIME_LEFT
     li $t6, 12345
     sw $t6, RAND_SEED
@@ -102,6 +103,15 @@ do_D:
 
 # YARN
 update_yarn:
+#move yarn at slower speed
+    lw   $t8, YARN_MOVE_COUNTER
+    addi $t8, $t8, 1
+    sw   $t8, YARN_MOVE_COUNTER
+    
+    li   $t9, 3
+    blt  $t8, $t9, draw_all
+    sw   $zero, YARN_MOVE_COUNTER
+#start movement logic 
     lw $t4, YARN_X_POS
     lw $t5, YARN_Y_POS
     lw $t6, YARN_DIR_X
